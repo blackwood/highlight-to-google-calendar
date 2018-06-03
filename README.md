@@ -1,4 +1,8 @@
-# highlight-to-calendar
+# highlight-to-google-calendar
+
+A chrome extension that allows you to use NLP to turn highlighted text into Google Calendar events. (Google Calendar used to do this automatically, but no longer 😿)
+
+!["Highlight to Google Calendar" in action](screenshot.png?raw=true)
 
 ## Development
 
@@ -6,7 +10,7 @@
 yarn watch
 ```
 
-Starts the watcher for building project when a file changed.
+Starts the watcher for building project when src file changes.
 
 ## Building
 
@@ -14,7 +18,7 @@ Starts the watcher for building project when a file changed.
 yarn build
 ```
 
-Preps your app for deployment. Minifies all files, piping them to the `src/build` folder.
+Preps the extension for deployment. Minifies all files, piping them to the `src/build` folder.
 
 # Credits
 

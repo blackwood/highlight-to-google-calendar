@@ -1,8 +1,7 @@
 {
   "name": "highlight-to-google-calendar",
   "version": "0.1.0",
-  "description":
-    "Highlight text and open popup to automatically add events to google calendar.",
+  "description": "Highlight text and open popup to automatically add events to google calendar.",
   "main": "src/js/main.js",
   "scripts": {
     "build": "parcel build src/js/** -d src/build",
@@ -13,7 +12,7 @@
     "@types/chrome": "^0.0.68",
     "babel-preset-env": "^1.6.1",
     "monolite": "^0.4.6",
-    "parcel-bundler": "^1.6.2",
+    "parcel-bundler": "^1.12.4",
     "query-string": "^6.1.0",
     "sherlockjs": "^1.3.7"
   },

@@ -68,3 +68,5 @@ typings/
 
 # Serverless directories
 .serverless
+
+*.pem

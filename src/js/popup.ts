@@ -1,16 +1,16 @@
-import { set } from "monolite";
-import sherlock from "sherlockjs";
-import queryString from "query-string";
+import { set } from 'monolite';
+import sherlock from 'sherlockjs';
+import queryString from 'query-string';
 
 const compose = (...fns) =>
-  fns
-    .reverse()
-    .reduce((prevFn, nextFn) => value => nextFn(prevFn(value)), value => value);
+  fns.reverse().reduce(
+    (prevFn, nextFn) => (value) => nextFn(prevFn(value)),
+    (value) => value
+  );
 
 const toTruncatedDate = (date: Date) => toFormattedDate(date).substr(0, 8);
 
-const toFormattedDate = (date: Date) =>
-  date.toISOString().replace(/-|:|\.\d\d\d/g, "");
+const toFormattedDate = (date: Date) => date.toISOString().replace(/-|:|\.\d\d\d/g, '');
 
 const dayAndDayAfter = (date: Date) => {
   let dayAfter = new Date();
@@ -26,14 +26,14 @@ const dayAndHourLater = (date: Date) => {
   return [date, hourLater];
 };
 
-const renderGuess = text => {
+const renderGuess = (text) => {
   const parsedResult = sherlock.parse(text);
   const { eventTitle, startDate, endDate, isAllDay } = parsedResult;
 
   const event = {
     details: text,
-    action: "TEMPLATE",
-    text: eventTitle
+    action: 'TEMPLATE',
+    text: eventTitle,
   };
   let workingDates = [startDate, endDate];
   if (startDate === null) {
@@ -46,15 +46,15 @@ const renderGuess = text => {
     workingDates = dayAndDayAfter(startDate);
   }
   const dates = workingDates
-    .filter(date => date instanceof Date)
-    .map(date => {
+    .filter((date) => date instanceof Date)
+    .map((date) => {
       if (isAllDay) {
         return toTruncatedDate(date);
       } else {
         return toFormattedDate(date);
       }
     })
-    .join("/");
+    .join('/');
   const query = queryString.stringify({ ...event, dates });
   const [start, end] = workingDates;
   return `
@@ -73,38 +73,35 @@ export interface State {
 const init = () => {
   const initialState: State = {
     text: undefined,
-    highlighted: false
+    highlighted: false,
   };
   let state = initialState;
 
-  const makeRenderer = (root: HTMLElement, initialState: State) => (
-    nextState?: State
-  ) => {
-    let state = typeof nextState === "undefined" ? initialState : nextState;
+  const makeRenderer = (root: HTMLElement, initialState: State) => (nextState?: State) => {
+    let state = typeof nextState === 'undefined' ? initialState : nextState;
     const innerHTML = `<div>
 <h1>Create an Event</h1>
     ${
       state.highlighted
-        ? `<code>${state.text}</code><div>${renderGuess(state.text)}</div>`
-        : "Please highlight some text first!"
+        ? `<label>Highlighted Text</label>
+        <input type="text" disabled>${state.text}</input><div>${renderGuess(state.text)}</div>`
+        : 'Please highlight some text first!'
     }</div>`;
     root.innerHTML = innerHTML;
     return state;
   };
-  const render = makeRenderer(document.querySelector("#popup"), initialState);
+  const render = makeRenderer(document.querySelector('#popup'), initialState);
   render();
 
-  const setText = (text?: string) => (state: State): State =>
-    set(state, _ => _.text)(text);
-  const setHighlighted = (highlighted: boolean) => (state: State): State =>
-    set(state, _ => _.highlighted)(highlighted);
+  const setText = (text?: string) => (state: State): State => set(state, (_) => _.text)(text);
+  const setHighlighted = (highlighted: boolean) => (state: State): State => set(state, (_) => _.highlighted)(highlighted);
 
   const handleText = ({ text }) => {
-    if (typeof text === "undefined") {
-      console.log("text undefined");
+    if (typeof text === 'undefined') {
+      console.log('text undefined');
       state = compose(render, setText(), setHighlighted(false))(state);
     } else {
-      console.log("text defined");
+      console.log('text defined');
       state = compose(render, setText(text), setHighlighted(true))(state);
     }
   };
@@ -112,13 +109,13 @@ const init = () => {
   chrome.tabs.query(
     {
       active: true,
-      currentWindow: true
+      currentWindow: true,
     },
-    tabs => {
+    (tabs) => {
       const [{ id }] = tabs;
-      chrome.tabs.sendMessage(id, { getSelection: true }, response => {
+      chrome.tabs.sendMessage(id, { getSelection: true }, (response) => {
         console.log(response);
-        if (typeof response !== "undefined") {
+        if (typeof response !== 'undefined') {
           handleText(response);
         }
       });
@@ -126,4 +123,4 @@ const init = () => {
   );
 };
 
-document.addEventListener("DOMContentLoaded", init);
+document.addEventListener('DOMContentLoaded', init);
